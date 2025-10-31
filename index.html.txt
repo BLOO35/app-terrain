@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Terrain</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+</head>
+<body style="font-family: Arial; padding: 20px; background: #f5f5f5; margin: 0;">
+    <div style="max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+        <h1 style="text-align: center; color: #667eea;">📋 Application Terrain</h1>
+        
+        <div id="page1" style="display: block;">
+            <h2 style="color: #333; margin-bottom: 20px;">Page 1 - Informations générales</h2>
+            <input type="text" id="nom" placeholder="Nom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="text" id="prenom" placeholder="Prénom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="text" id="semaine" placeholder="Semaine" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="text" id="client" placeholder="Client" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="text" id="magasin" placeholder="Magasin" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <button id="btnNext" style="width: 100%; padding: 15px; margin-top: 20px; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Suivant →</button>
+        </div>
+        
+        <div id="page2" style="display: none;">
+            <h2 style="color: #333; margin-bottom: 20px;">Page 2 - Adresse et détails</h2>
+            <select id="ville" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">-- Sélectionner ville --</option>
+                <option value="Paris">Paris</option>
+                <option value="Saint-Malo">Saint-Malo</option>
+                <option value="Dinard">Dinard</option>
+                <option value="Quimper">Quimper</option>
+            </select>
+            <input type="text" id="cp" placeholder="Code postal" readonly style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; background: #f5f5f5;">
+            <select id="rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">-- Sélectionner rue --</option>
+            </select>
+            <input type="text" id="numero" placeholder="N° rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <select id="habitat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">-- Type d'habitat --</option>
+                <option value="Pavillon">Pavillon</option>
+                <option value="Immeuble">Immeuble</option>
+            </select>
+            <input type="number" id="foyers" placeholder="Nombre de foyers" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <select id="acces" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">-- Type d'accès --</option>
+                <option value="Libre">Libre</option>
+                <option value="Clé Pass">Clé Pass</option>
+                <option value="Vigik">Vigik</option>
+                <option value="Interphone">Interphone</option>
+                <option value="Code">Code</option>
+            </select>
+            <select id="resultat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">-- Résultat du contrôle --</option>
+                <option value="Servi">Servi</option>
+                <option value="Non servi">Non servi</option>
+                <option value="Mal servi">Mal servi</option>
+            </select>
+            <select id="malservi" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">-- Si Mal servi --</option>
+                <option value="Dépôt">Dépôt</option>
+                <option value="Ciblage (Stop-pubs servi)">Ciblage (Stop-pubs servi)</option>
+                <option value="Ciblage (HLM servi)">Ciblage (HLM servi)</option>
+                <option value="Multidistribution">Multidistribution</option>
+            </select>
+            <select id="civilite" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+                <option value="">-- Civilité --</option>
+                <option value="M.">M.</option>
+                <option value="Mme">Mme</option>
+                <option value="M. & Mme">M. & Mme</option>
+            </select>
+            <input type="text" id="resident" placeholder="Nom du résident" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <button id="btnBack" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
+            <button id="btnSave" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">✓ Valider</button>
+        </div>
+        
+        <div id="page3" style="display: none;">
+            <h2 style="color: #333; margin-bottom: 20px;">Adresses collectées</h2>
+            <div id="entries" style="margin-bottom: 20px;"></div>
+            <button id="btnExport" style="width: 100%; padding: 15px; margin: 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">📥 Télécharger Excel</button>
+            <button id="btnNew" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">+ Nouvelle adresse</button>
+        </div>
+    </div>
+    
+    <script>
+        const data = {
+            codePostaux: {'Paris': '75000', 'Saint-Malo': '35400', 'Dinard': '35401', 'Quimper': '29100'},
+            rues: {'Paris': ['Rue Jean Moulin', 'Rue Gambetta'], 'Saint-Malo': ['Avenue Charles de Gaulle'], 'Dinard': ['Rue des Fleurs'], 'Quimper': ['Boulevard de Paris']}
+        };
+        
+        let entries = [];
+        let page1Data = {};
+        
+        document.getElementById('btnNext').onclick = function() {
+            const nom = document.getElementById('nom').value.trim();
+            const prenom = document.getElementById('prenom').value.trim();
+            const semaine = document.getElementById('semaine').value.trim();
+            const client = document.getElementById('client').value.trim();
+            const magasin = document.getElementById('magasin').value.trim();
+            
+            if (!nom || !prenom || !semaine || !client || !magasin) {
+                alert('Veuillez remplir tous les champs');
+                return;
+            }
+            
+            page1Data = {nom, prenom, semaine, client, magasin};
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page2').style.display = 'block';
+            window.scrollTo(0, 0);
+        };
+        
+        document.getElementById('ville').onchange = function() {
+            const ville = this.value;
+            const rueSelect = document.getElementById('rue');
+            const cp = document.getElementById('cp');
+            
+            rueSelect.innerHTML = '<option value="">-- Sélectionner rue --</option>';
+            cp.value = '';
+            
+            if (ville) {
+                cp.value = data.codePostaux[ville];
+                const rues = data.rues[ville];
+                rues.forEach(r => {
+                    const opt = document.createElement('option');
+                    opt.value = r;
+                    opt.textContent = r;
+                    rueSelect.appendChild(opt);
+                });
+            }
+        };
+        
+        document.getElementById('btnBack').onclick = function() {
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page1').style.display = 'block';
+            window.scrollTo(0, 0);
+        };
+        
+        document.getElementById('btnSave').onclick = function() {
+            const ville = document.getElementById('ville').value.trim();
+            const rue = document.getElementById('rue').value.trim();
+            const numero = document.getElementById('numero').value.trim();
+            const habitat = document.getElementById('habitat').value.trim();
+            const foyers = document.getElementById('foyers').value.trim();
+            const acces = document.getElementById('acces').value.trim();
+            const resultat = document.getElementById('resultat').value.trim();
+            const civilite = document.getElementById('civilite').value.trim();
+            const resident = document.getElementById('resident').value.trim();
+            
+            if (!ville || !rue || !numero || !habitat || !foyers || !acces || !resultat || !civilite || !resident) {
+                alert('Veuillez remplir tous les champs obligatoires');
+                return;
+            }
+            
+            entries.push({
+                numero: entries.length + 1,
+                numero_rue: numero,
+                rue: rue,
+                ville: ville,
+                codePostal: document.getElementById('cp').value,
+                typeHabitat: habitat,
+                nbrFoyers: foyers,
+                typeAcces: acces,
+                resultat: resultat,
+                siMalServi: document.getElementById('malservi').value || '',
+                civilite: civilite,
+                nomResident: resident,
+                ...page1Data
+            });
+            
+            document.getElementById('page2').style.display = 'none';
+            document.getElementById('page3').style.display = 'block';
+            displayEntries();
+            alert('Adresse enregistrée ! (' + entries.length + ' au total)');
+            window.scrollTo(0, 0);
+        };
+        
+        function displayEntries() {
+            let html = '';
+            entries.forEach(e => {
+                html += '<div style="background: #f0f0f0; padding: 12px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #667eea;">';
+                html += '<strong style="color: #667eea;">#' + e.numero + ' - ' + e.numero_rue + ' ' + e.rue + '</strong><br>';
+                html += '<small style="color: #666;">' + e.codePostal + ' ' + e.ville + '</small><br>';
+                html += '<small style="color: #666;">' + e.typeHabitat + ' · ' + e.nbrFoyers + ' foyer(s) · Résultat: ' + e.resultat + '</small>';
+                html += '</div>';
+            });
+            document.getElementById('entries').innerHTML = html;
+        }
+        
+        document.getElementById('btnNew').onclick = function() {
+            document.getElementById('rue').innerHTML = '<option value="">-- Sélectionner rue --</option>';
+            document.getElementById('numero').value = '';
+            document.getElementById('habitat').value = '';
+            document.getElementById('foyers').value = '';
+            document.getElementById('acces').value = '';
+            document.getElementById('resultat').value = '';
+            document.getElementById('malservi').value = '';
+            document.getElementById('civilite').value = '';
+            document.getElementById('resident').value = '';
+            document.getElementById('ville').value = '';
+            document.getElementById('cp').value = '';
+            
+            document.getElementById('page3').style.display = 'none';
+            document.getElementById('page2').style.display = 'block';
+            window.scrollTo(0, 0);
+        };
+        
+        document.getElementById('btnExport').onclick = function() {
+            const wsData = [
+                ['N°', 'Rue', 'Ville', 'Code postal', 'Type d\'habitat', 'Nombre de foyers', 'Type d\'accès', 'Résultat du contrôle', 'Si Mal servi', 'Civilité du résident', 'Nom du résident']
+            ];
+            
+            entries.forEach((e, i) => {
+                wsData.push([
+                    i + 1,
+                    e.numero_rue + ' ' + e.rue,
+                    e.ville,
+                    e.codePostal,
+                    e.typeHabitat,
+                    e.nbrFoyers,
+                    e.typeAcces,
+                    e.resultat,
+                    e.siMalServi,
+                    e.civilite,
+                    e.nomResident
+                ]);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [{wch:5}, {wch:25}, {wch:15}, {wch:12}, {wch:15}, {wch:15}, {wch:15}, {wch:18}, {wch:20}, {wch:15}, {wch:20}];
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Adresses');
+            XLSX.writeFile(wb, 'adresses_collectees.xlsx');
+        };
+    </script>
+</body>
+</html>
