@@ -69,6 +69,13 @@
                 <option value="M. & Mme">M. & Mme</option>
             </select>
             <input type="text" id="resident" placeholder="Nom du résident" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            
+            <div id="photoSection" style="margin: 15px 0; padding: 15px; background: #f9f9f9; border-radius: 5px; border: 1px solid #e0e0e0;">
+                <h3 style="color: #667eea; margin-top: 0;">📸 Photo (optionnel)</h3>
+                <input type="file" id="photoInput" accept="image/*" capture="environment" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <div id="photoPreview" style="margin-top: 10px;"></div>
+            </div>
+            
             <button id="btnBack" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
             <button id="btnSave" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">✓ Valider</button>
         </div>
@@ -91,6 +98,20 @@
         
         let entries = [];
         let page1Data = {};
+        let currentPhoto = null;
+        
+        document.getElementById('photoInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    currentPhoto = event.target.result;
+                    const preview = document.getElementById('photoPreview');
+                    preview.innerHTML = '<img src="' + currentPhoto + '" style="max-width: 100%; border-radius: 5px; margin-top: 10px;">';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
         
         document.getElementById('btnNext').onclick = function() {
             const nom = document.getElementById('nom').value.trim();
@@ -165,6 +186,7 @@
                 siMalServi: document.getElementById('malservi').value || '',
                 civilite: civilite,
                 nomResident: resident,
+                photo: currentPhoto,
                 ...page1Data
             });
             
@@ -188,6 +210,9 @@
                 html += '<strong style="color: #667eea;">#' + e.numero + ' - ' + e.numero_rue + ' ' + e.rue + '</strong><br>';
                 html += '<small style="color: #666;">' + e.codePostal + ' ' + e.ville + '</small><br>';
                 html += '<small style="color: #666;">' + e.typeHabitat + ' · ' + e.nbrFoyers + ' foyer(s) · Résultat: ' + e.resultat + '</small>';
+                if (e.photo) {
+                    html += '<br><small style="color: #667eea;">📸 Photo jointe</small>';
+                }
                 html += '</div>';
             });
             document.getElementById('entries').innerHTML = html;
@@ -206,6 +231,9 @@
             document.getElementById('resident').value = '';
             document.getElementById('ville').value = '';
             document.getElementById('cp').value = '';
+            document.getElementById('photoInput').value = '';
+            document.getElementById('photoPreview').innerHTML = '';
+            currentPhoto = null;
             
             document.getElementById('page3').style.display = 'none';
             document.getElementById('page2').style.display = 'block';
@@ -214,7 +242,7 @@
         
         function generateExcel() {
             const wsData = [
-                ['Commune', 'N° rue', 'Nom rue', 'Code postal', 'Ville', 'Nombre de foyers', 'Type d\'accès', 'Civilité', 'Nom', 'Résultat', 'Si Mal servi']
+                ['Commune', 'N° rue', 'Nom rue', 'Code postal', 'Ville', 'Nombre de foyers', 'Type d\'accès', 'Civilité', 'Nom', 'Résultat', 'Si Mal servi', 'Photo']
             ];
             
             entries.forEach((e, i) => {
@@ -229,12 +257,13 @@
                     e.civilite,
                     e.nomResident,
                     e.resultat,
-                    e.siMalServi
+                    e.siMalServi,
+                    e.photo ? 'Oui' : 'Non'
                 ]);
             });
             
             const ws = XLSX.utils.aoa_to_sheet(wsData);
-            ws['!cols'] = [{wch:15}, {wch:8}, {wch:25}, {wch:12}, {wch:15}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:15}, {wch:25}];
+            ws['!cols'] = [{wch:15}, {wch:8}, {wch:25}, {wch:12}, {wch:15}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:15}, {wch:25}, {wch:10}];
             
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Adresses');
@@ -263,6 +292,9 @@
                 if (e.siMalServi) {
                     tableauTexte += 'Si Mal servi : ' + e.siMalServi + '\n';
                 }
+                if (e.photo) {
+                    tableauTexte += 'Photo : Oui\n';
+                }
                 tableauTexte += '\n';
             });
             
@@ -285,13 +317,14 @@
                 tableauTexte +
                 '\n=======================================\n' +
                 'Fichier Excel joint au mail.\n' +
+                'Note : Les photos sont stockées dans votre appareil.\n' +
                 'Cordialement,\n' +
                 'Application Terrain';
             
             const templateParams = {
                 to_email: 'amc@auditmediacom.com',
                 from_name: page1Data.nom + ' ' + page1Data.prenom,
-                subject: 'Rapport collecte - 10 adresses validées - ' + page1Data.magasin,
+                subject: 'Rapport collecte - ' + page1Data.client + ' - ' + page1Data.magasin + ' - ' + page1Data.nom + ' ' + page1Data.prenom,
                 message: messageComplet
             };
             
@@ -304,6 +337,7 @@
                     
                     setTimeout(() => {
                         entries = [];
+                        currentPhoto = null;
                         document.getElementById('page1').style.display = 'block';
                         document.getElementById('page3').style.display = 'none';
                         document.getElementById('page2').style.display = 'none';
