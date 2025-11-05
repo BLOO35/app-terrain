@@ -242,25 +242,29 @@
         }
         
         function sendEmailAndExcel() {
-            let htmlTable = '<table border="1" cellpadding="10" cellspacing="0" style="border-collapse: collapse; width: 100%;">';
-            htmlTable += '<tr style="background-color: #f0f0f0;"><th>Commune</th><th>N° rue</th><th>Nom rue</th><th>Code postal</th><th>Ville</th><th>Foyers</th><th>Accès</th><th>Civilité</th><th>Nom</th><th>Résultat</th><th>Si Mal servi</th></tr>';
+            let tableauTexte = '\n';
+            tableauTexte += '========================================\n';
+            tableauTexte += '     TABLEAU DES ADRESSES COLLECTEES\n';
+            tableauTexte += '========================================\n\n';
             
             entries.forEach((e, i) => {
-                htmlTable += '<tr>';
-                htmlTable += '<td>' + e.ville + '</td>';
-                htmlTable += '<td>' + e.numero_rue + '</td>';
-                htmlTable += '<td>' + e.rue + '</td>';
-                htmlTable += '<td>' + e.codePostal + '</td>';
-                htmlTable += '<td>' + e.ville + '</td>';
-                htmlTable += '<td>' + e.nbrFoyers + '</td>';
-                htmlTable += '<td>' + e.typeAcces + '</td>';
-                htmlTable += '<td>' + e.civilite + '</td>';
-                htmlTable += '<td>' + e.nomResident + '</td>';
-                htmlTable += '<td>' + e.resultat + '</td>';
-                htmlTable += '<td>' + e.siMalServi + '</td>';
-                htmlTable += '</tr>';
+                tableauTexte += 'Adresse #' + (i+1) + '\n';
+                tableauTexte += '────────────────────────────────────\n';
+                tableauTexte += 'Commune : ' + e.ville + '\n';
+                tableauTexte += 'N° rue : ' + e.numero_rue + '\n';
+                tableauTexte += 'Nom rue : ' + e.rue + '\n';
+                tableauTexte += 'Code postal : ' + e.codePostal + '\n';
+                tableauTexte += 'Ville : ' + e.ville + '\n';
+                tableauTexte += 'Nombre de foyers : ' + e.nbrFoyers + '\n';
+                tableauTexte += 'Type d\'accès : ' + e.typeAcces + '\n';
+                tableauTexte += 'Civilité : ' + e.civilite + '\n';
+                tableauTexte += 'Nom : ' + e.nomResident + '\n';
+                tableauTexte += 'Résultat : ' + e.resultat + '\n';
+                if (e.siMalServi) {
+                    tableauTexte += 'Si Mal servi : ' + e.siMalServi + '\n';
+                }
+                tableauTexte += '\n';
             });
-            htmlTable += '</table>';
             
             const today = new Date();
             const dateStr = today.toLocaleDateString('fr-FR', { 
@@ -269,12 +273,26 @@
                 day: 'numeric' 
             });
             
+            const messageComplet = 'Bonjour,\n\n' +
+                '=======================================\n' +
+                '    RAPPORT DE COLLECTE DE TERRAIN\n' +
+                '=======================================\n\n' +
+                'Collecteur : ' + page1Data.nom + ' ' + page1Data.prenom + '\n' +
+                'Semaine : ' + page1Data.semaine + '\n' +
+                'Date du contrôle : ' + dateStr + '\n' +
+                'Client : ' + page1Data.client + '\n' +
+                'Magasin : ' + page1Data.magasin + '\n' +
+                tableauTexte +
+                '\n=======================================\n' +
+                'Fichier Excel joint au mail.\n' +
+                'Cordialement,\n' +
+                'Application Terrain';
+            
             const templateParams = {
                 to_email: 'amc@auditmediacom.com',
                 from_name: page1Data.nom + ' ' + page1Data.prenom,
                 subject: 'Rapport collecte - 10 adresses validées - ' + page1Data.magasin,
-                message: 'Bonjour,\n\n=== RAPPORT DE COLLECTE ===\n\nCollecteur : ' + page1Data.nom + ' ' + page1Data.prenom + '\nSemaine : ' + page1Data.semaine + '\nDate du contrôle : ' + dateStr + '\nClient : ' + page1Data.client + '\nMagasin : ' + page1Data.magasin + '\n\n=== ADRESSES COLLECTÉES ===\n\n' + htmlTable,
-                html_table: htmlTable
+                message: messageComplet
             };
             
             emailjs.send('service_ryubxrp', 'template_ds6yn34', templateParams)
