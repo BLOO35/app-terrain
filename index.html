@@ -174,8 +174,8 @@
             alert('Adresse enregistrée ! (' + entries.length + ' / 10)');
             
             if (entries.length === 10) {
-                alert('🎉 10 adresses collectées ! Un email va être envoyé...');
-                sendEmail();
+                alert('🎉 10 adresses collectées ! Email et Excel envoyés...');
+                sendEmailAndExcel();
             }
             
             window.scrollTo(0, 0);
@@ -212,36 +212,69 @@
             window.scrollTo(0, 0);
         };
         
-        function sendEmail() {
-            let csvContent = 'N°,Rue,Ville,Code postal,Type d\'habitat,Nombre de foyers,Type d\'accès,Résultat du contrôle,Si Mal servi,Civilité du résident,Nom du résident\n';
+        function generateExcel() {
+            const wsData = [
+                ['Commune', 'N° rue', 'Nom rue', 'Code postal', 'Ville', 'Nombre de foyers', 'Type d\'accès', 'Civilité', 'Nom']
+            ];
             
             entries.forEach((e, i) => {
-                csvContent += `${i+1},"${e.numero_rue} ${e.rue}","${e.ville}","${e.codePostal}","${e.typeHabitat}","${e.nbrFoyers}","${e.typeAcces}","${e.resultat}","${e.siMalServi}","${e.civilite}","${e.nomResident}"\n`;
+                wsData.push([
+                    e.ville,
+                    e.numero_rue,
+                    e.rue,
+                    e.codePostal,
+                    e.ville,
+                    e.nbrFoyers,
+                    e.typeAcces,
+                    e.civilite,
+                    e.nomResident
+                ]);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [{wch:15}, {wch:8}, {wch:25}, {wch:12}, {wch:15}, {wch:15}, {wch:15}, {wch:12}, {wch:20}];
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Adresses');
+            XLSX.writeFile(wb, 'adresses_collectees.xlsx');
+        }
+        
+        function sendEmailAndExcel() {
+            let csvContent = 'Commune,N° rue,Nom rue,Code postal,Ville,Nombre de foyers,Type d\'accès,Civilité,Nom\n';
+            
+            entries.forEach((e, i) => {
+                csvContent += `"${e.ville}","${e.numero_rue}","${e.rue}","${e.codePostal}","${e.ville}","${e.nbrFoyers}","${e.typeAcces}","${e.civilite}","${e.nomResident}"\n`;
             });
             
             const templateParams = {
                 to_email: 'amc@auditmediacom.com',
+                from_name: page1Data.nom + ' ' + page1Data.prenom,
                 subject: 'Rapport collecte - 10 adresses validées',
-                message: 'Bonjour,\n\nLes 10 adresses ont été collectées.\n\nDonnées :\n' + csvContent,
+                message: 'Bonjour,\n\nVoici le rapport de collecte de 10 adresses.\n\nSigné par : ' + page1Data.nom + ' ' + page1Data.prenom + '\nSemaine : ' + page1Data.semaine + '\nClient : ' + page1Data.client + '\nMagasin : ' + page1Data.magasin + '\n\nDonnées :\n' + csvContent,
                 csv_data: csvContent
             };
             
             emailjs.send('service_ryubxrp', 'template_ds6yn34', templateParams)
                 .then(function(response) {
-                    alert('✅ Email envoyé avec succès à amc@auditmediacom.com !');
+                    alert('✅ Email envoyé avec succès !\n📥 Téléchargement de l\'Excel...');
                     console.log('SUCCESS!', response.status, response.text);
+                    
+                    setTimeout(() => {
+                        generateExcel();
+                    }, 500);
                     
                     setTimeout(() => {
                         entries = [];
                         document.getElementById('page1').style.display = 'block';
                         document.getElementById('page3').style.display = 'none';
+                        document.getElementById('page2').style.display = 'none';
                         document.getElementById('nom').value = '';
                         document.getElementById('prenom').value = '';
                         document.getElementById('semaine').value = '';
                         document.getElementById('client').value = '';
                         document.getElementById('magasin').value = '';
                         window.scrollTo(0, 0);
-                    }, 2000);
+                    }, 3000);
                 }, function(error) {
                     alert('❌ Erreur lors de l\'envoi : ' + error);
                     console.log('FAILED...', error);
