@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Terrain</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
 <body style="font-family: Arial; padding: 20px; background: #f5f5f5; margin: 0;">
     <div style="max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
@@ -74,13 +75,15 @@
         
         <div id="page3" style="display: none;">
             <h2 style="color: #333; margin-bottom: 20px;">Adresses collectées</h2>
+            <div id="counter" style="text-align: center; font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 15px;">0 / 10 adresses</div>
             <div id="entries" style="margin-bottom: 20px;"></div>
-            <button id="btnExport" style="width: 100%; padding: 15px; margin: 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">📥 Télécharger Excel</button>
             <button id="btnNew" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">+ Nouvelle adresse</button>
         </div>
     </div>
     
     <script>
+        emailjs.init('3LJ36I1SMDa4OfCoh');
+        
         const data = {
             codePostaux: {'Paris': '75000', 'Saint-Malo': '35400', 'Dinard': '35401', 'Quimper': '29100'},
             rues: {'Paris': ['Rue Jean Moulin', 'Rue Gambetta'], 'Saint-Malo': ['Avenue Charles de Gaulle'], 'Dinard': ['Rue des Fleurs'], 'Quimper': ['Boulevard de Paris']}
@@ -168,7 +171,13 @@
             document.getElementById('page2').style.display = 'none';
             document.getElementById('page3').style.display = 'block';
             displayEntries();
-            alert('Adresse enregistrée ! (' + entries.length + ' au total)');
+            alert('Adresse enregistrée ! (' + entries.length + ' / 10)');
+            
+            if (entries.length === 10) {
+                alert('🎉 10 adresses collectées ! Un email va être envoyé...');
+                sendEmail();
+            }
+            
             window.scrollTo(0, 0);
         };
         
@@ -182,6 +191,7 @@
                 html += '</div>';
             });
             document.getElementById('entries').innerHTML = html;
+            document.getElementById('counter').textContent = entries.length + ' / 10 adresses';
         }
         
         document.getElementById('btnNew').onclick = function() {
@@ -202,34 +212,41 @@
             window.scrollTo(0, 0);
         };
         
-        document.getElementById('btnExport').onclick = function() {
-            const wsData = [
-                ['N°', 'Rue', 'Ville', 'Code postal', 'Type d\'habitat', 'Nombre de foyers', 'Type d\'accès', 'Résultat du contrôle', 'Si Mal servi', 'Civilité du résident', 'Nom du résident']
-            ];
+        function sendEmail() {
+            let csvContent = 'N°,Rue,Ville,Code postal,Type d\'habitat,Nombre de foyers,Type d\'accès,Résultat du contrôle,Si Mal servi,Civilité du résident,Nom du résident\n';
             
             entries.forEach((e, i) => {
-                wsData.push([
-                    i + 1,
-                    e.numero_rue + ' ' + e.rue,
-                    e.ville,
-                    e.codePostal,
-                    e.typeHabitat,
-                    e.nbrFoyers,
-                    e.typeAcces,
-                    e.resultat,
-                    e.siMalServi,
-                    e.civilite,
-                    e.nomResident
-                ]);
+                csvContent += `${i+1},"${e.numero_rue} ${e.rue}","${e.ville}","${e.codePostal}","${e.typeHabitat}","${e.nbrFoyers}","${e.typeAcces}","${e.resultat}","${e.siMalServi}","${e.civilite}","${e.nomResident}"\n`;
             });
             
-            const ws = XLSX.utils.aoa_to_sheet(wsData);
-            ws['!cols'] = [{wch:5}, {wch:25}, {wch:15}, {wch:12}, {wch:15}, {wch:15}, {wch:15}, {wch:18}, {wch:20}, {wch:15}, {wch:20}];
+            const templateParams = {
+                to_email: 'amc@auditmediacom.com',
+                subject: 'Rapport collecte - 10 adresses validées',
+                message: 'Bonjour,\n\nLes 10 adresses ont été collectées.\n\nDonnées :\n' + csvContent,
+                csv_data: csvContent
+            };
             
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Adresses');
-            XLSX.writeFile(wb, 'adresses_collectees.xlsx');
-        };
+            emailjs.send('service_ryubxrp', 'template_ds6yn34', templateParams)
+                .then(function(response) {
+                    alert('✅ Email envoyé avec succès à amc@auditmediacom.com !');
+                    console.log('SUCCESS!', response.status, response.text);
+                    
+                    setTimeout(() => {
+                        entries = [];
+                        document.getElementById('page1').style.display = 'block';
+                        document.getElementById('page3').style.display = 'none';
+                        document.getElementById('nom').value = '';
+                        document.getElementById('prenom').value = '';
+                        document.getElementById('semaine').value = '';
+                        document.getElementById('client').value = '';
+                        document.getElementById('magasin').value = '';
+                        window.scrollTo(0, 0);
+                    }, 2000);
+                }, function(error) {
+                    alert('❌ Erreur lors de l\'envoi : ' + error);
+                    console.log('FAILED...', error);
+                });
+        }
     </script>
 </body>
 </html>
