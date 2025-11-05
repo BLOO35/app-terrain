@@ -240,46 +240,58 @@
         }
         
         function sendEmailAndExcel() {
-            let csvContent = 'Commune,N° rue,Nom rue,Code postal,Ville,Nombre de foyers,Type d\'accès,Civilité,Nom\n';
+    let csvContent = 'Commune,N° rue,Nom rue,Code postal,Ville,Nombre de foyers,Type d\'accès,Civilité,Nom\n';
+    
+    entries.forEach((e, i) => {
+        csvContent += `"${e.ville}","${e.numero_rue}","${e.rue}","${e.codePostal}","${e.ville}","${e.nbrFoyers}","${e.typeAcces}","${e.civilite}","${e.nomResident}"\n`;
+    });
+    
+    // Récupérer la date actuelle
+    const today = new Date();
+    const dateStr = today.toLocaleDateString('fr-FR', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+    });
+    
+    const templateParams = {
+        to_email: 'amc@auditmediacom.com',
+        from_name: page1Data.nom + ' ' + page1Data.prenom,
+        subject: 'Rapport collecte - 10 adresses validées - ' + page1Data.magasin,
+        message: 'Bonjour,\n\n=== RAPPORT DE COLLECTE ===\n\n' +
+                'Collecteur : ' + page1Data.nom + ' ' + page1Data.prenom + '\n' +
+                'Semaine : ' + page1Data.semaine + '\n' +
+                'Date du contrôle : ' + dateStr + '\n' +
+                'Client : ' + page1Data.client + '\n' +
+                'Magasin : ' + page1Data.magasin + '\n\n' +
+                '=== ADRESSES COLLECTÉES ===\n\n' +
+                csvContent,
+        csv_data: csvContent
+    };
+    
+    emailjs.send('service_ryubxrp', 'template_ds6yn34', templateParams)
+        .then(function(response) {
+            alert('✅ Email envoyé avec succès !\n📥 Téléchargement de l\'Excel...');
+            console.log('SUCCESS!', response.status, response.text);
             
-            entries.forEach((e, i) => {
-                csvContent += `"${e.ville}","${e.numero_rue}","${e.rue}","${e.codePostal}","${e.ville}","${e.nbrFoyers}","${e.typeAcces}","${e.civilite}","${e.nomResident}"\n`;
-            });
+            setTimeout(() => {
+                generateExcel();
+            }, 500);
             
-            const templateParams = {
-                to_email: 'amc@auditmediacom.com',
-                from_name: page1Data.nom + ' ' + page1Data.prenom,
-                subject: 'Rapport collecte - 10 adresses validées',
-                message: 'Bonjour,\n\nVoici le rapport de collecte de 10 adresses.\n\nSigné par : ' + page1Data.nom + ' ' + page1Data.prenom + '\nSemaine : ' + page1Data.semaine + '\nClient : ' + page1Data.client + '\nMagasin : ' + page1Data.magasin + '\n\nDonnées :\n' + csvContent,
-                csv_data: csvContent
-            };
-            
-            emailjs.send('service_ryubxrp', 'template_ds6yn34', templateParams)
-                .then(function(response) {
-                    alert('✅ Email envoyé avec succès !\n📥 Téléchargement de l\'Excel...');
-                    console.log('SUCCESS!', response.status, response.text);
-                    
-                    setTimeout(() => {
-                        generateExcel();
-                    }, 500);
-                    
-                    setTimeout(() => {
-                        entries = [];
-                        document.getElementById('page1').style.display = 'block';
-                        document.getElementById('page3').style.display = 'none';
-                        document.getElementById('page2').style.display = 'none';
-                        document.getElementById('nom').value = '';
-                        document.getElementById('prenom').value = '';
-                        document.getElementById('semaine').value = '';
-                        document.getElementById('client').value = '';
-                        document.getElementById('magasin').value = '';
-                        window.scrollTo(0, 0);
-                    }, 3000);
-                }, function(error) {
-                    alert('❌ Erreur lors de l\'envoi : ' + error);
-                    console.log('FAILED...', error);
-                });
-        }
-    </script>
-</body>
-</html>
+            setTimeout(() => {
+                entries = [];
+                document.getElementById('page1').style.display = 'block';
+                document.getElementById('page3').style.display = 'none';
+                document.getElementById('page2').style.display = 'none';
+                document.getElementById('nom').value = '';
+                document.getElementById('prenom').value = '';
+                document.getElementById('semaine').value = '';
+                document.getElementById('client').value = '';
+                document.getElementById('magasin').value = '';
+                window.scrollTo(0, 0);
+            }, 3000);
+        }, function(error) {
+            alert('❌ Erreur lors de l\'envoi : ' + error);
+            console.log('FAILED...', error);
+        });
+}
