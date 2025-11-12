@@ -11,24 +11,29 @@
     <div style="max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
         <h1 style="text-align: center; color: #667eea;">📋 Application Terrain</h1>
         
-        <div id="page1" style="display: block;">
+        <div id="page0" style="display: block;">
+            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Sélection de votre zone</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">Choisissez votre zone de contrôle :</p>
+            <button id="btnZoneParis" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Paris</button>
+            <button id="btnZoneMarseille" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Marseille</button>
+            <button id="btnZoneLyon" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Lyon</button>
+        </div>
+        
+        <div id="page1" style="display: none;">
             <h2 style="color: #333; margin-bottom: 20px;">Page 1 - Informations générales</h2>
             <input type="text" id="nom" placeholder="Nom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="text" id="prenom" placeholder="Prénom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="text" id="semaine" placeholder="Semaine" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="text" id="client" placeholder="Client" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="text" id="magasin" placeholder="Magasin" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <button id="btnNext" style="width: 100%; padding: 15px; margin-top: 20px; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Suivant →</button>
+            <button id="btnBack1" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
+            <button id="btnNext" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Suivant →</button>
         </div>
         
         <div id="page2" style="display: none;">
             <h2 style="color: #333; margin-bottom: 20px;">Page 2 - Adresse et détails</h2>
             <select id="ville" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
                 <option value="">-- Sélectionner ville --</option>
-                <option value="Paris">Paris</option>
-                <option value="Saint-Malo">Saint-Malo</option>
-                <option value="Dinard">Dinard</option>
-                <option value="Quimper">Quimper</option>
             </select>
             <input type="text" id="cp" placeholder="Code postal" readonly style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px; background: #f5f5f5;">
             <select id="rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
@@ -76,7 +81,7 @@
                 <div id="photoPreview" style="margin-top: 10px;"></div>
             </div>
             
-            <button id="btnBack" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
+            <button id="btnBack2" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
             <button id="btnSave" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">✓ Valider</button>
         </div>
         
@@ -92,14 +97,69 @@
     <script>
         emailjs.init('3LJ36I1SMDa4OfCoh');
         
-        const data = {
-            codePostaux: {'Paris': '75000', 'Saint-Malo': '35400', 'Dinard': '35401', 'Quimper': '29100'},
-            rues: {'Paris': ['Rue Jean Moulin', 'Rue Gambetta'], 'Saint-Malo': ['Avenue Charles de Gaulle'], 'Dinard': ['Rue des Fleurs'], 'Quimper': ['Boulevard de Paris']}
+        const dataZones = {
+            'Paris': {
+                codePostaux: {'Paris': '75000', 'Boulogne': '92100', 'Neuilly': '92200'},
+                rues: {
+                    'Paris': ['Rue Jean Moulin', 'Rue Gambetta', 'Rue Rivoli'],
+                    'Boulogne': ['Avenue Paul Doumer', 'Boulevard Verdun'],
+                    'Neuilly': ['Avenue Charles de Gaulle', 'Boulevard Maillot']
+                }
+            },
+            'Marseille': {
+                codePostaux: {'Marseille': '13000', 'Aix': '13100', 'Aubagne': '13400'},
+                rues: {
+                    'Marseille': ['Rue de la Canebière', 'Boulevard Longchamp'],
+                    'Aix': ['Cours Mirabeau', 'Rue Gaston Saporta'],
+                    'Aubagne': ['Avenue de la Toison d\'Or', 'Rue Fonrouge']
+                }
+            },
+            'Lyon': {
+                codePostaux: {'Lyon': '69000', 'Villeurbanne': '69100', 'Décines': '69150'},
+                rues: {
+                    'Lyon': ['Rue de la République', 'Rue Childebert', 'Rue d\'Algérie'],
+                    'Villeurbanne': ['Boulevard de la République', 'Rue Thiers'],
+                    'Décines': ['Rue Alsace Lorraine', 'Avenue Gaston Berger']
+                }
+            }
         };
         
         let entries = [];
         let page1Data = {};
         let currentPhoto = null;
+        let currentZone = null;
+        
+        // Sélection de zone
+        document.getElementById('btnZoneParis').onclick = function() {
+            selectZone('Paris');
+        };
+        document.getElementById('btnZoneMarseille').onclick = function() {
+            selectZone('Marseille');
+        };
+        document.getElementById('btnZoneLyon').onclick = function() {
+            selectZone('Lyon');
+        };
+        
+        function selectZone(zone) {
+            currentZone = zone;
+            loadVilles(zone);
+            document.getElementById('page0').style.display = 'none';
+            document.getElementById('page1').style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+        
+        function loadVilles(zone) {
+            const villeSelect = document.getElementById('ville');
+            villeSelect.innerHTML = '<option value="">-- Sélectionner ville --</option>';
+            
+            const villes = Object.keys(dataZones[zone].codePostaux);
+            villes.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v;
+                opt.textContent = v;
+                villeSelect.appendChild(opt);
+            });
+        }
         
         document.getElementById('photoInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -113,6 +173,12 @@
                 reader.readAsDataURL(file);
             }
         });
+        
+        document.getElementById('btnBack1').onclick = function() {
+            document.getElementById('page1').style.display = 'none';
+            document.getElementById('page0').style.display = 'block';
+            window.scrollTo(0, 0);
+        };
         
         document.getElementById('btnNext').onclick = function() {
             const nom = document.getElementById('nom').value.trim();
@@ -141,8 +207,8 @@
             cp.value = '';
             
             if (ville) {
-                cp.value = data.codePostaux[ville];
-                const rues = data.rues[ville];
+                cp.value = dataZones[currentZone].codePostaux[ville];
+                const rues = dataZones[currentZone].rues[ville];
                 rues.forEach(r => {
                     const opt = document.createElement('option');
                     opt.value = r;
@@ -152,7 +218,7 @@
             }
         };
         
-        document.getElementById('btnBack').onclick = function() {
+        document.getElementById('btnBack2').onclick = function() {
             document.getElementById('page2').style.display = 'none';
             document.getElementById('page1').style.display = 'block';
             window.scrollTo(0, 0);
@@ -188,6 +254,7 @@
                 civilite: civilite,
                 nomResident: resident,
                 photo: currentPhoto,
+                zone: currentZone,
                 ...page1Data
             });
             
@@ -249,7 +316,7 @@
         
         function generateExcel() {
             const wsData = [
-                ['Commune', 'N° rue', 'Nom rue', 'Code postal', 'Ville', 'Nombre de foyers', 'Type d\'accès', 'Civilité', 'Nom', 'Résultat', 'Si Mal servi', 'Photo']
+                ['Commune', 'N° rue', 'Nom rue', 'Code postal', 'Ville', 'Nombre de foyers', 'Type d\'accès', 'Civilité', 'Nom', 'Résultat', 'Si Mal servi', 'Photo', 'Zone']
             ];
             
             entries.forEach((e, i) => {
@@ -265,16 +332,17 @@
                     e.nomResident,
                     e.resultat,
                     e.siMalServi,
-                    e.photo ? 'Oui' : 'Non'
+                    e.photo ? 'Oui' : 'Non',
+                    e.zone
                 ]);
             });
             
             const ws = XLSX.utils.aoa_to_sheet(wsData);
-            ws['!cols'] = [{wch:15}, {wch:8}, {wch:25}, {wch:12}, {wch:15}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:15}, {wch:25}, {wch:10}];
+            ws['!cols'] = [{wch:15}, {wch:8}, {wch:25}, {wch:12}, {wch:15}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:15}, {wch:25}, {wch:10}, {wch:12}];
             
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, 'Adresses');
-            XLSX.writeFile(wb, 'adresses_collectees.xlsx');
+            XLSX.writeFile(wb, 'adresses_collectees_' + currentZone + '.xlsx');
         }
         
         function sendEmailAndExcel() {
@@ -316,6 +384,7 @@
                 '=======================================\n' +
                 '    RAPPORT DE COLLECTE DE TERRAIN\n' +
                 '=======================================\n\n' +
+                'Zone : ' + currentZone + '\n' +
                 'Collecteur : ' + page1Data.nom + ' ' + page1Data.prenom + '\n' +
                 'Semaine : ' + page1Data.semaine + '\n' +
                 'Date du contrôle : ' + dateStr + '\n' +
@@ -331,7 +400,7 @@
             const templateParams = {
                 to_email: 'amc@auditmediacom.com',
                 from_name: page1Data.nom + ' ' + page1Data.prenom,
-                subject: 'Rapport collecte - ' + page1Data.client + ' - ' + page1Data.magasin + ' - ' + page1Data.nom + ' ' + page1Data.prenom + ' (' + entries.length + ' adresses)',
+                subject: 'Rapport collecte - ' + currentZone + ' - ' + page1Data.client + ' - ' + page1Data.magasin + ' - ' + page1Data.nom + ' ' + page1Data.prenom + ' (' + entries.length + ' adresses)',
                 message: messageComplet
             };
             
@@ -345,8 +414,9 @@
                     setTimeout(() => {
                         entries = [];
                         currentPhoto = null;
-                        document.getElementById('page1').style.display = 'block';
+                        document.getElementById('page0').style.display = 'block';
                         document.getElementById('page3').style.display = 'none';
+                        document.getElementById('page1').style.display = 'none';
                         document.getElementById('page2').style.display = 'none';
                         document.getElementById('nom').value = '';
                         document.getElementById('prenom').value = '';
