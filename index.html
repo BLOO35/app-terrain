@@ -82,9 +82,10 @@
         
         <div id="page3" style="display: none;">
             <h2 style="color: #333; margin-bottom: 20px;">Adresses collectées</h2>
-            <div id="counter" style="text-align: center; font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 15px;">0 / 10 adresses</div>
+            <div id="counter" style="text-align: center; font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 15px;">0 adresses</div>
             <div id="entries" style="margin-bottom: 20px;"></div>
             <button id="btnNew" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">+ Nouvelle adresse</button>
+            <button id="btnEndDay" style="width: 100%; padding: 15px; margin: 10px 0; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">🏁 Fin de journée</button>
         </div>
     </div>
     
@@ -193,12 +194,7 @@
             document.getElementById('page2').style.display = 'none';
             document.getElementById('page3').style.display = 'block';
             displayEntries();
-            alert('Adresse enregistrée ! (' + entries.length + ' / 10)');
-            
-            if (entries.length === 10) {
-                alert('🎉 10 adresses collectées ! Email et Excel envoyés...');
-                sendEmailAndExcel();
-            }
+            alert('Adresse enregistrée ! (' + entries.length + ' adresse(s))');
             
             window.scrollTo(0, 0);
         };
@@ -216,7 +212,7 @@
                 html += '</div>';
             });
             document.getElementById('entries').innerHTML = html;
-            document.getElementById('counter').textContent = entries.length + ' / 10 adresses';
+            document.getElementById('counter').textContent = entries.length + ' adresse(s)';
         }
         
         document.getElementById('btnNew').onclick = function() {
@@ -238,6 +234,17 @@
             document.getElementById('page3').style.display = 'none';
             document.getElementById('page2').style.display = 'block';
             window.scrollTo(0, 0);
+        };
+        
+        document.getElementById('btnEndDay').onclick = function() {
+            if (entries.length === 0) {
+                alert('⚠️ Aucune adresse collectée !');
+                return;
+            }
+            
+            if (confirm('📧 Confirmer l\'envoi de ' + entries.length + ' adresse(s) ?')) {
+                sendEmailAndExcel();
+            }
         };
         
         function generateExcel() {
@@ -314,17 +321,17 @@
                 'Date du contrôle : ' + dateStr + '\n' +
                 'Client : ' + page1Data.client + '\n' +
                 'Magasin : ' + page1Data.magasin + '\n' +
+                'Total d\'adresses : ' + entries.length + '\n' +
                 tableauTexte +
                 '\n=======================================\n' +
                 'Fichier Excel joint au mail.\n' +
-                'Note : Les photos sont stockées dans votre appareil.\n' +
                 'Cordialement,\n' +
                 'Application Terrain';
             
             const templateParams = {
                 to_email: 'amc@auditmediacom.com',
                 from_name: page1Data.nom + ' ' + page1Data.prenom,
-                subject: 'Rapport collecte - ' + page1Data.client + ' - ' + page1Data.magasin + ' - ' + page1Data.nom + ' ' + page1Data.prenom,
+                subject: 'Rapport collecte - ' + page1Data.client + ' - ' + page1Data.magasin + ' - ' + page1Data.nom + ' ' + page1Data.prenom + ' (' + entries.length + ' adresses)',
                 message: messageComplet
             };
             
