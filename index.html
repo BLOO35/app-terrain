@@ -12,32 +12,32 @@
         <h1 style="text-align: center; color: #667eea;">📋 Application Terrain</h1>
         
         <div id="page0" style="display: block;">
-            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Sélection de votre zone</h2>
-            <p style="text-align: center; color: #666; margin-bottom: 20px;">Choisissez votre zone de contrôle :</p>
+            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Selection de votre zone</h2>
+            <p style="text-align: center; color: #666; margin-bottom: 20px;">Choisissez votre zone de controle :</p>
             <button id="btnZoneLouvroil" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Louvroil</button>
         </div>
         
         <div id="page1" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">Page 1 - Informations générales</h2>
+            <h2 style="color: #333; margin-bottom: 20px;">Page 1 - Informations generales</h2>
             <input type="text" id="nom" placeholder="Nom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <input type="text" id="prenom" placeholder="Prénom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="text" id="prenom" placeholder="Prenom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="text" id="semaine" placeholder="Semaine" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="text" id="client" placeholder="Client" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="text" id="magasin" placeholder="Magasin" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <button id="btnBack1" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
-            <button id="btnNext" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Suivant →</button>
+            <button id="btnBack1" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Retour</button>
+            <button id="btnNext" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Suivant</button>
         </div>
         
         <div id="page2" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">Page 2 - Adresse et détails</h2>
+            <h2 style="color: #333; margin-bottom: 20px;">Page 2 - Adresse et details</h2>
             <select id="ville" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-                <option value="">-- Sélectionner commune --</option>
+                <option value="">-- Selectionner commune --</option>
             </select>
             <select id="rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-                <option value="">-- Sélectionner rue --</option>
+                <option value="">-- Selectionner rue --</option>
             </select>
             <input type="number" id="numero" placeholder="N° rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <div id="numeroError" style="color: #d32f2f; font-size: 12px; margin: -8px 0 10px 0; display: none;">❌ Numéro non autorisé pour cette rue</div>
+            <div id="numeroError" style="color: #d32f2f; font-size: 12px; margin: -8px 0 10px 0; display: none;">Numero non autorise pour cette rue</div>
             
             <select id="habitat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
                 <option value="">-- Type d'habitat --</option>
@@ -46,55 +46,59 @@
             </select>
             <input type="number" id="foyers" placeholder="Nombre de foyers" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <select id="acces" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-                <option value="">-- Type d'accès --</option>
+                <option value="">-- Type d'acces --</option>
                 <option value="Libre">Libre</option>
-                <option value="Clé Pass">Clé Pass</option>
+                <option value="Cle Pass">Cle Pass</option>
                 <option value="Vigik">Vigik</option>
                 <option value="Interphone">Interphone</option>
                 <option value="Code">Code</option>
             </select>
             <select id="resultat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-                <option value="">-- Résultat du contrôle --</option>
+                <option value="">-- Resultat du controle --</option>
                 <option value="Servi">Servi</option>
                 <option value="Non servi">Non servi</option>
                 <option value="Mal servi">Mal servi</option>
             </select>
             <select id="malservi" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
                 <option value="">-- Si Mal servi --</option>
-                <option value="Dépôt">Dépôt</option>
+                <option value="Depot">Depot</option>
                 <option value="Ciblage (Stop-pubs servi)">Ciblage (Stop-pubs servi)</option>
                 <option value="Ciblage (HLM servi)">Ciblage (HLM servi)</option>
                 <option value="Multidistribution">Multidistribution</option>
             </select>
             <select id="civilite" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-                <option value="">-- Civilité --</option>
+                <option value="">-- Civilite --</option>
                 <option value="M.">M.</option>
                 <option value="Mme">Mme</option>
                 <option value="M. & Mme">M. & Mme</option>
             </select>
-            <input type="text" id="resident" placeholder="Nom du résident" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="text" id="resident" placeholder="Nom du resident" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             
             <div id="photoSection" style="margin: 15px 0; padding: 15px; background: #f9f9f9; border-radius: 5px; border: 1px solid #e0e0e0;">
-                <h3 style="color: #667eea; margin-top: 0;">📸 Photo (optionnel)</h3>
+                <h3 style="color: #667eea; margin-top: 0;">Photo (optionnel)</h3>
                 <input type="file" id="photoInput" accept="image/*" capture="environment" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
                 <div id="photoPreview" style="margin-top: 10px;"></div>
             </div>
             
-            <button id="btnBack2" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
-            <button id="btnSave" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">✓ Valider</button>
+            <button id="btnBack2" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Retour</button>
+            <button id="btnSave" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Valider</button>
         </div>
         
         <div id="page3" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">Adresses collectées</h2>
+            <h2 style="color: #333; margin-bottom: 20px;">Adresses collectees</h2>
             <div id="counter" style="text-align: center; font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 15px;">0 adresses</div>
             <div id="entries" style="margin-bottom: 20px;"></div>
             <button id="btnNew" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">+ Nouvelle adresse</button>
-            <button id="btnEndDay" style="width: 100%; padding: 15px; margin: 10px 0; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">🏁 Fin de journée</button>
+            <button id="btnEndDay" style="width: 100%; padding: 15px; margin: 10px 0; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Fin de journee</button>
         </div>
     </div>
     
     <script>
-        emailjs.init('3LJ36I1SMDa4OfCoh');
+        try {
+            emailjs.init('3LJ36I1SMDa4OfCoh');
+        } catch(e) {
+            console.error('EmailJS init failed:', e);
+        }
         
         const dataZones = {
             'Louvroil': {
@@ -107,6 +111,19 @@
         let currentPhoto = null;
         let currentZone = null;
         let currentRueRanges = [];
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                const btnZone = document.getElementById('btnZoneLouvroil');
+                if (btnZone) {
+                    btnZone.onclick = function() {
+                        selectZone('Louvroil');
+                    };
+                }
+            } catch(e) {
+                console.error('Error attaching event:', e);
+            }
+        });
         
         document.getElementById('btnZoneLouvroil').onclick = function() {
             selectZone('Louvroil');
@@ -122,7 +139,7 @@
         
         function loadVilles(zone) {
             const villeSelect = document.getElementById('ville');
-            villeSelect.innerHTML = '<option value="">-- Sélectionner commune --</option>';
+            villeSelect.innerHTML = '<option value="">-- Selectionner commune --</option>';
             
             const communes = Object.keys(dataZones[zone].rues);
             communes.forEach(c => {
@@ -174,7 +191,7 @@
             const commune = this.value;
             const rueSelect = document.getElementById('rue');
             
-            rueSelect.innerHTML = '<option value="">-- Sélectionner rue --</option>';
+            rueSelect.innerHTML = '<option value="">-- Selectionner rue --</option>';
             
             if (commune) {
                 const rues = Object.keys(dataZones[currentZone].rues[commune]);
@@ -235,7 +252,7 @@
             const numeroInt = parseInt(numero);
             const isValid = currentRueRanges.some(range => numeroInt >= range.debut && numeroInt <= range.fin);
             if (!isValid) {
-                alert('❌ Le numéro ' + numero + ' n\'est pas autorisé pour cette rue !');
+                alert('Le numero ' + numero + ' n\'est pas autorise pour cette rue !');
                 return;
             }
             
@@ -259,9 +276,9 @@
             document.getElementById('page2').style.display = 'none';
             document.getElementById('page3').style.display = 'block';
             displayEntries();
-            alert('Adresse enregistrée ! (' + entries.length + ' adresse(s))');
+            alert('Adresse enregistree ! (' + entries.length + ' adresse(s))');
             
-            document.getElementById('rue').innerHTML = '<option value="">-- Sélectionner rue --</option>';
+            document.getElementById('rue').innerHTML = '<option value="">-- Selectionner rue --</option>';
             document.getElementById('numero').value = '';
             document.getElementById('habitat').value = '';
             document.getElementById('foyers').value = '';
@@ -283,9 +300,9 @@
                 html += '<div style="background: #f0f0f0; padding: 12px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #667eea;">';
                 html += '<strong style="color: #667eea;">#' + e.numero + ' - ' + e.numero_rue + ' ' + e.rue + '</strong><br>';
                 html += '<small style="color: #666;">' + e.commune + '</small><br>';
-                html += '<small style="color: #666;">' + e.typeHabitat + ' · ' + e.nbrFoyers + ' foyer(s) · Résultat: ' + e.resultat + '</small>';
+                html += '<small style="color: #666;">' + e.typeHabitat + ' - ' + e.nbrFoyers + ' foyer(s) - Resultat: ' + e.resultat + '</small>';
                 if (e.photo) {
-                    html += '<br><small style="color: #667eea;">📸 Photo jointe</small>';
+                    html += '<br><small style="color: #667eea;">Photo jointe</small>';
                 }
                 html += '</div>';
             });
@@ -295,7 +312,7 @@
         
         document.getElementById('btnNew').onclick = function() {
             document.getElementById('ville').value = '';
-            document.getElementById('rue').innerHTML = '<option value="">-- Sélectionner rue --</option>';
+            document.getElementById('rue').innerHTML = '<option value="">-- Selectionner rue --</option>';
             document.getElementById('numero').value = '';
             document.getElementById('habitat').value = '';
             document.getElementById('foyers').value = '';
@@ -316,18 +333,20 @@
         
         document.getElementById('btnEndDay').onclick = function() {
             if (entries.length === 0) {
-                alert('⚠️ Aucune adresse collectée !');
+                alert('Aucune adresse collectee !');
                 return;
             }
             
-            if (confirm('📧 Confirmer l\'envoi de ' + entries.length + ' adresse(s) ?')) {
+            if (confirm('Confirmer l\'envoi de ' + entries.length + ' adresse(s) ?')) {
+                this.disabled = true;
+                this.textContent = 'Envoi en cours...';
                 sendEmailAndExcel();
             }
         };
         
         function generateExcel() {
             const wsData = [
-                ['Commune', 'N° rue', 'Nom rue', 'Type d\'habitat', 'Nombre de foyers', 'Type d\'accès', 'Civilité', 'Nom', 'Résultat', 'Si Mal servi', 'Photo', 'Zone']
+                ['Commune', 'N° rue', 'Nom rue', 'Type d\'habitat', 'Nombre de foyers', 'Type d\'acces', 'Civilite', 'Nom', 'Resultat', 'Si Mal servi', 'Photo', 'Zone']
             ];
             
             entries.forEach((e, i) => {
@@ -363,22 +382,19 @@
             
             entries.forEach((e, i) => {
                 tableauTexte += 'Adresse #' + (i+1) + '\n';
-                tableauTexte += '────────────────────────────────────\n';
-                tableauTexte += 'Commune : ' + e.commune + '\n';
-                tableauTexte += 'N° rue : ' + e.numero_rue + '\n';
-                tableauTexte += 'Nom rue : ' + e.rue + '\n';
-                tableauTexte += 'Nombre de foyers : ' + e.nbrFoyers + '\n';
-                tableauTexte += 'Type d\'accès : ' + e.typeAcces + '\n';
-                tableauTexte += 'Civilité : ' + e.civilite + '\n';
-                tableauTexte += 'Nom : ' + e.nomResident + '\n';
-                tableauTexte += 'Résultat : ' + e.resultat + '\n';
+                tableauTexte += '------------------------------------\n';
+                
+                let prefix = (e.resultat === 'Non servi' || e.resultat === 'Mal servi') ? '*** PROBLEME *** ' : '';
+                
+                tableauTexte += prefix + 'Commune : ' + e.commune + ' - N° rue : ' + e.numero_rue + ' - Nom rue : ' + e.rue + ' - Foyers : ' + e.nbrFoyers + ' - Acces : ' + e.typeAcces + ' - Civilite : ' + e.civilite + ' - Nom : ' + e.nomResident + ' - Resultat : ' + e.resultat;
+                
                 if (e.siMalServi) {
-                    tableauTexte += 'Si Mal servi : ' + e.siMalServi + '\n';
+                    tableauTexte += ' - Raison : ' + e.siMalServi;
                 }
                 if (e.photo) {
-                    tableauTexte += 'Photo : Oui\n';
+                    tableauTexte += ' - Photo jointe';
                 }
-                tableauTexte += '\n';
+                tableauTexte += '\n\n';
             });
             
             const today = new Date();
@@ -395,10 +411,10 @@
                 'Zone : ' + currentZone + '\n' +
                 'Collecteur : ' + page1Data.nom + ' ' + page1Data.prenom + '\n' +
                 'Semaine : ' + page1Data.semaine + '\n' +
-                'Date du contrôle : ' + dateStr + '\n' +
+                'Date du controle : ' + dateStr + '\n' +
                 'Client : ' + page1Data.client + '\n' +
                 'Magasin : ' + page1Data.magasin + '\n' +
-                'Total d\'adresses : ' + entries.length + '\n' +
+                'Total adresses : ' + entries.length + '\n' +
                 tableauTexte +
                 '\n=======================================\n' +
                 'Fichier Excel joint au mail.\n' +
@@ -414,7 +430,7 @@
             
             emailjs.send('service_ryubxrp', 'template_ds6yn34', templateParams)
                 .then(function(response) {
-                    alert('✅ Email envoyé avec succès !\n📥 Téléchargement de l\'Excel...');
+                    alert('Email envoye ! Telechargement Excel...');
                     console.log('SUCCESS!', response.status, response.text);
                     
                     generateExcel();
@@ -431,11 +447,15 @@
                         document.getElementById('semaine').value = '';
                         document.getElementById('client').value = '';
                         document.getElementById('magasin').value = '';
+                        document.getElementById('btnEndDay').disabled = false;
+                        document.getElementById('btnEndDay').textContent = 'Fin de journee';
                         window.scrollTo(0, 0);
-                    }, 3000);
+                    }, 2000);
                 }, function(error) {
-                    alert('❌ Erreur lors de l\'envoi : ' + error);
                     console.log('FAILED...', error);
+                    alert('Erreur : ' + JSON.stringify(error).substring(0, 100));
+                    document.getElementById('btnEndDay').disabled = false;
+                    document.getElementById('btnEndDay').textContent = 'Fin de journee';
                 });
         }
     </script>
