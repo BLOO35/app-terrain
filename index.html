@@ -31,7 +31,6 @@
         <div id="page2" style="display: none;">
             <h2 style="color: #333; margin-bottom: 20px;">Page 2 - Adresse et details</h2>
             <select id="ville" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Selectionner commune --</option></select>
-            <input type="text" id="codepostal" placeholder="Code postal" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <select id="rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Selectionner rue --</option></select>
             <input type="number" id="numero" placeholder="N° rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <select id="habitat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Type d'habitat --</option><option value="Pavillon">Pavillon</option><option value="Immeuble">Immeuble</option></select>
@@ -59,63 +58,32 @@
         var dataZones = {};
         dataZones.Louvroil = {};
         dataZones.Louvroil.rues = {};
-        dataZones.Louvroil.rues["FERRIERE LA GRANDE"] = {};
-        dataZones.Louvroil.rues["FERRIERE LA GRANDE"]["RUE DES CARRIERES"] = [{debut:1, fin:22}];
-        dataZones.Louvroil.rues["FERRIERE LA GRANDE"]["AVENUE DU MARECHAL FOCH"] = [{debut:1, fin:59}];
-        dataZones.Louvroil.rues["FERRIERE LA GRANDE"]["PLACE DE LA GARE"] = [{debut:1, fin:3}];
-        dataZones.Louvroil.rues["HAUTMONT"] = {};
-        dataZones.Louvroil.rues["HAUTMONT"]["AVENUE DU GENERAL LECLERC"] = [{debut:1, fin:279}];
-        dataZones.Louvroil.rues["HAUTMONT"]["AVENUE GAMBETTA"] = [{debut:2, fin:36}, {debut:37, fin:37}];
-        dataZones.Louvroil.rues["LOUVROIL"] = {};
-        dataZones.Louvroil.rues["LOUVROIL"]["AVENUE DE MONTFORT EN CHALOSSE"] = [{debut:1, fin:150}];
-        dataZones.Louvroil.rues["LOUVROIL"]["RUE JEAN JAURES"] = [{debut:12, fin:51}];
+        dataZones.Louvroil.rues["FERRIERE LA GRANDE"] = {"RUE DES CARRIERES":[{debut:1, fin:22}],"AVENUE DU MARECHAL FOCH":[{debut:1, fin:59}],"PLACE DE LA GARE":[{debut:1, fin:3}]};
+        dataZones.Louvroil.rues["HAUTMONT"] = {"AVENUE DU GENERAL LECLERC":[{debut:1, fin:279}],"AVENUE GAMBETTA":[{debut:2, fin:36}]};
+        dataZones.Louvroil.rues["LOUVROIL"] = {"AVENUE DE MONTFORT EN CHALOSSE":[{debut:1, fin:150}],"RUE JEAN JAURES":[{debut:12, fin:51}]};
         
         var entries = [];
         var page1Data = {};
         var currentPhoto = null;
         var currentZone = null;
-        var currentRueRanges = [];
         
         function initApp() {
-            try {
-                emailjs.init("3LJ36I1SMDa4OfCoh");
-            } catch(e) {
-                console.log("EmailJS error:", e);
-            }
-            
-            var btnZone = document.getElementById("btnZoneLouvroil");
-            if (btnZone) {
-                btnZone.onclick = function() {
-                    selectZone("Louvroil");
-                };
-            }
-            
-            document.getElementById("btnBack1").onclick = function() {
-                document.getElementById("page1").style.display = "none";
-                document.getElementById("page0").style.display = "block";
-            };
-            
+            try { emailjs.init("3LJ36I1SMDa4OfCoh"); } catch(e) {}
+            document.getElementById("btnZoneLouvroil").onclick = function() { selectZone("Louvroil"); };
+            document.getElementById("btnBack1").onclick = function() { document.getElementById("page1").style.display = "none"; document.getElementById("page0").style.display = "block"; };
             document.getElementById("btnNext").onclick = function() {
                 var nom = document.getElementById("nom").value.trim();
                 var prenom = document.getElementById("prenom").value.trim();
-                var semaine = document.getElementById("semaine").value.trim();
-                var client = document.getElementById("client").value.trim();
-                var magasin = document.getElementById("magasin").value.trim();
-                if (!nom || !prenom || !semaine || !client || !magasin) {
-                    alert("Veuillez remplir tous les champs");
-                    return;
-                }
-                page1Data = {nom: nom, prenom: prenom, semaine: semaine, client: client, magasin: magasin};
+                if (!nom || !prenom) { alert("Veuillez remplir tous les champs"); return; }
+                page1Data = {nom: nom, prenom: prenom, semaine: document.getElementById("semaine").value.trim(), client: document.getElementById("client").value.trim(), magasin: document.getElementById("magasin").value.trim()};
                 document.getElementById("page1").style.display = "none";
                 document.getElementById("page2").style.display = "block";
             };
-            
             document.getElementById("ville").onchange = function() {
-                var commune = this.value;
                 var rueSelect = document.getElementById("rue");
                 rueSelect.innerHTML = "<option value=\"\">-- Selectionner rue --</option>";
-                if (commune && dataZones[currentZone].rues[commune]) {
-                    var rues = Object.keys(dataZones[currentZone].rues[commune]);
+                if (this.value && dataZones[currentZone].rues[this.value]) {
+                    var rues = Object.keys(dataZones[currentZone].rues[this.value]);
                     for (var i = 0; i < rues.length; i++) {
                         var opt = document.createElement("option");
                         opt.value = rues[i];
@@ -124,101 +92,39 @@
                     }
                 }
             };
-            
-            document.getElementById("rue").onchange = function() {
-                var commune = document.getElementById("ville").value;
-                var rue = this.value;
-                if (commune && rue && dataZones[currentZone].rues[commune][rue]) {
-                    currentRueRanges = dataZones[currentZone].rues[commune][rue];
-                }
-            };
-            
-            document.getElementById("btnBack2").onclick = function() {
-                document.getElementById("page2").style.display = "none";
-                document.getElementById("page1").style.display = "block";
-            };
-            
+            document.getElementById("btnBack2").onclick = function() { document.getElementById("page2").style.display = "none"; document.getElementById("page1").style.display = "block"; };
             document.getElementById("btnSave").onclick = function() {
                 var commune = document.getElementById("ville").value.trim();
-                var codepostal = document.getElementById("codepostal").value.trim();
                 var rue = document.getElementById("rue").value.trim();
                 var numero = document.getElementById("numero").value.trim();
-                var habitat = document.getElementById("habitat").value.trim();
-                var foyers = document.getElementById("foyers").value.trim();
-                var acces = document.getElementById("acces").value.trim();
                 var resultat = document.getElementById("resultat").value.trim();
                 var civilite = document.getElementById("civilite").value.trim();
                 var resident = document.getElementById("resident").value.trim();
+                if (!commune || !rue || !numero || !resultat || !civilite || !resident) { alert("Veuillez remplir tous les champs"); return; }
                 
-                if (!commune || !codepostal || !rue || !numero || !habitat || !foyers || !acces || !resultat || !civilite || !resident) {
-                    alert("Veuillez remplir tous les champs");
-                    return;
-                }
-                
-                var entry = {
-                    numero: entries.length + 1,
-                    numero_rue: numero,
-                    rue: rue,
-                    codepostal: codepostal,
-                    commune: commune,
-                    typeHabitat: habitat,
-                    nbrFoyers: foyers,
-                    typeAcces: acces,
-                    resultat: resultat,
-                    siMalServi: document.getElementById("malservi").value || "",
-                    civilite: civilite,
-                    nomResident: resident,
-                    photo: currentPhoto,
-                    zone: currentZone,
-                    nom: page1Data.nom,
-                    prenom: page1Data.prenom,
-                    semaine: page1Data.semaine,
-                    client: page1Data.client,
-                    magasin: page1Data.magasin
-                };
-                entries.push(entry);
-                
+                entries.push({numero_rue: numero, rue: rue, commune: commune, resultat: resultat, civilite: civilite, nomResident: resident});
                 document.getElementById("page2").style.display = "none";
                 document.getElementById("page3").style.display = "block";
                 displayEntries();
                 alert("Adresse enregistree : " + entries.length);
-                
                 document.getElementById("rue").innerHTML = "<option value=\"\">-- Selectionner rue --</option>";
                 document.getElementById("numero").value = "";
-                document.getElementById("habitat").value = "";
-                document.getElementById("foyers").value = "";
-                document.getElementById("acces").value = "";
                 document.getElementById("resultat").value = "";
-                document.getElementById("malservi").value = "";
                 document.getElementById("civilite").value = "";
                 document.getElementById("resident").value = "";
-                document.getElementById("photoInput").value = "";
-                currentPhoto = null;
             };
-            
             document.getElementById("btnNew").onclick = function() {
                 document.getElementById("ville").value = "";
-                document.getElementById("codepostal").value = "";
                 document.getElementById("rue").innerHTML = "<option value=\"\">-- Selectionner rue --</option>";
                 document.getElementById("numero").value = "";
-                document.getElementById("habitat").value = "";
-                document.getElementById("foyers").value = "";
-                document.getElementById("acces").value = "";
                 document.getElementById("resultat").value = "";
-                document.getElementById("malservi").value = "";
                 document.getElementById("civilite").value = "";
                 document.getElementById("resident").value = "";
-                document.getElementById("photoInput").value = "";
-                currentPhoto = null;
                 document.getElementById("page3").style.display = "none";
                 document.getElementById("page2").style.display = "block";
             };
-            
             document.getElementById("btnEndDay").onclick = function() {
-                if (entries.length === 0) {
-                    alert("Aucune adresse collectee");
-                    return;
-                }
+                if (entries.length === 0) { alert("Aucune adresse collectee"); return; }
                 if (confirm("Confirmer envoi de " + entries.length + " adresse(s) ?")) {
                     this.disabled = true;
                     this.textContent = "Envoi en cours...";
@@ -246,26 +152,11 @@
         
         function displayEntries() {
             var html = "<table style=\"width: 100%; border-collapse: collapse; font-size: 12px;\">";
-            html += "<tr style=\"background: #667eea; color: white; font-weight: bold;\">";
-            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">N°</td>";
-            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Rue</td>";
-            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">CP</td>";
-            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Commune</td>";
-            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Resultat</td>";
-            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Nom</td>";
-            html += "</tr>";
-            
+            html += "<tr style=\"background: #667eea; color: white; font-weight: bold;\"><td style=\"border: 1px solid #ddd; padding: 8px;\">N° rue</td><td style=\"border: 1px solid #ddd; padding: 8px;\">Adresse</td><td style=\"border: 1px solid #ddd; padding: 8px;\">Commune</td><td style=\"border: 1px solid #ddd; padding: 8px;\">Resultat</td><td style=\"border: 1px solid #ddd; padding: 8px;\">Nom</td></tr>";
             for (var i = 0; i < entries.length; i++) {
                 var e = entries[i];
                 var bgColor = (e.resultat === "Non servie" || e.resultat === "Mal servie") ? "#ffe0e0" : "white";
-                html += "<tr style=\"background: " + bgColor + ";\">";
-                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.numero_rue + "</td>";
-                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.rue + "</td>";
-                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.codepostal + "</td>";
-                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.commune + "</td>";
-                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.resultat + "</td>";
-                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.civilite + " " + e.nomResident + "</td>";
-                html += "</tr>";
+                html += "<tr style=\"background: " + bgColor + ";\"><td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.numero_rue + "</td><td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.rue + "</td><td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.commune + "</td><td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.resultat + "</td><td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.civilite + " " + e.nomResident + "</td></tr>";
             }
             html += "</table>";
             document.getElementById("entries").innerHTML = html;
@@ -273,82 +164,24 @@
         }
         
         function sendEmail() {
-            var text = "\nN° rue | Adresse | Code postal | Commune | Resultat | Nom du resident\n";
-            text += "-------------------------------------------------------------------------------------\n";
-            
+            var text = "\nN° rue | Adresse | Commune | Resultat | Nom du resident\n";
             for (var i = 0; i < entries.length; i++) {
                 var e = entries[i];
                 var mark = (e.resultat === "Non servie" || e.resultat === "Mal servie") ? "*** " : "";
-                text += mark + e.numero_rue + " | " + e.rue + " | " + e.codepostal + " | " + e.commune + " | " + e.resultat + " | " + e.civilite + " " + e.nomResident + "\n";
+                text += mark + e.numero_rue + " | " + e.rue + " | " + e.commune + " | " + e.resultat + " | " + e.civilite + " " + e.nomResident + "\n";
             }
-            
-            var today = new Date();
-            var dateStr = today.toLocaleDateString("fr-FR");
-            
-            var msg = "Bonjour,\n\n";
-            msg += "=======================================\n";
-            msg += "    RAPPORT DE COLLECTE DE TERRAIN\n";
-            msg += "=======================================\n\n";
-            msg += "Zone : " + currentZone + "\n";
-            msg += "Collecteur : " + page1Data.nom + " " + page1Data.prenom + "\n";
-            msg += "Semaine : " + page1Data.semaine + "\n";
-            msg += "Date du controle : " + dateStr + "\n";
-            msg += "Client : " + page1Data.client + "\n";
-            msg += "Magasin : " + page1Data.magasin + "\n";
-            msg += "Total adresses : " + entries.length + "\n";
-            msg += text;
-            msg += "\n=======================================\n";
-            msg += "Fichier Excel joint au mail.\n";
-            msg += "Cordialement,\n";
-            msg += "Application Terrain";
-            
-            var params = {
-                to_email: "amc@auditmediacom.com",
-                from_name: page1Data.nom + " " + page1Data.prenom,
-                subject: "Rapport collecte - " + currentZone + " - " + page1Data.client + " - " + page1Data.magasin,
-                message: msg
-            };
-            
-            emailjs.send("service_ryubxrp", "template_ds6yn34", params).then(
-                function() {
-                    alert("Email envoye");
-                    generateExcel();
-                    setTimeout(function() {
-                        entries = [];
-                        currentPhoto = null;
-                        document.getElementById("page0").style.display = "block";
-                        document.getElementById("page3").style.display = "none";
-                        document.getElementById("page1").style.display = "none";
-                        document.getElementById("page2").style.display = "none";
-                        document.getElementById("btnEndDay").disabled = false;
-                        document.getElementById("btnEndDay").textContent = "Fin de journee";
-                    }, 2000);
-                },
-                function(error) {
-                    alert("Erreur : " + error);
-                    document.getElementById("btnEndDay").disabled = false;
-                    document.getElementById("btnEndDay").textContent = "Fin de journee";
-                }
-            );
+            var msg = "Bonjour,\nZone: " + currentZone + "\nCollecteur: " + page1Data.nom + " " + page1Data.prenom + "\n" + text + "\nCordialement";
+            emailjs.send("service_ryubxrp", "template_ds6yn34", {to_email: "amc@auditmediacom.com", from_name: page1Data.nom, subject: "Rapport collecte - " + currentZone, message: msg}).then(function() {
+                alert("Email envoye");
+                entries = [];
+                document.getElementById("page0").style.display = "block";
+                document.getElementById("page3").style.display = "none";
+                document.getElementById("btnEndDay").disabled = false;
+                document.getElementById("btnEndDay").textContent = "Fin de journee";
+            });
         }
         
-        function generateExcel() {
-            var wsData = [["N° rue", "Adresse", "Code postal", "Commune", "Resultat", "Civilite", "Nom du resident"]];
-            for (var i = 0; i < entries.length; i++) {
-                var e = entries[i];
-                wsData.push([e.numero_rue, e.rue, e.codepostal, e.commune, e.resultat, e.civilite, e.nomResident]);
-            }
-            var ws = XLSX.utils.aoa_to_sheet(wsData);
-            var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "Adresses");
-            XLSX.writeFile(wb, "adresses_" + currentZone + ".xlsx");
-        }
-        
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", initApp);
-        } else {
-            initApp();
-        }
+        if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", initApp); } else { initApp(); }
     </script>
 </body>
 </html>
