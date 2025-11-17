@@ -31,13 +31,14 @@
         <div id="page2" style="display: none;">
             <h2 style="color: #333; margin-bottom: 20px;">Page 2 - Adresse et details</h2>
             <select id="ville" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Selectionner commune --</option></select>
+            <input type="text" id="codepostal" placeholder="Code postal" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <select id="rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Selectionner rue --</option></select>
             <input type="number" id="numero" placeholder="N° rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <select id="habitat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Type d'habitat --</option><option value="Pavillon">Pavillon</option><option value="Immeuble">Immeuble</option></select>
             <input type="number" id="foyers" placeholder="Nombre de foyers" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <select id="acces" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Type d'acces --</option><option value="Libre">Libre</option><option value="Code">Code</option><option value="Interphone">Interphone</option></select>
-            <select id="resultat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Resultat --</option><option value="Servi">Servi</option><option value="Non servi">Non servi</option><option value="Mal servi">Mal servi</option></select>
-            <select id="malservi" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Si Mal servi --</option><option value="Depot">Depot</option><option value="Ciblage">Ciblage</option></select>
+            <select id="resultat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Resultat --</option><option value="Servie">Servie</option><option value="Non servie">Non servie</option><option value="Mal servie">Mal servie</option></select>
+            <select id="malservi" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Si Mal servie --</option><option value="Depot">Depot</option><option value="Ciblage">Ciblage</option></select>
             <select id="civilite" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;"><option value="">-- Civilite --</option><option value="M.">M.</option><option value="Mme">Mme</option></select>
             <input type="text" id="resident" placeholder="Nom du resident" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
             <input type="file" id="photoInput" accept="image/*" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px;">
@@ -48,7 +49,7 @@
         <div id="page3" style="display: none;">
             <h2 style="color: #333; margin-bottom: 20px;">Adresses collectees</h2>
             <div id="counter" style="text-align: center; font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 15px;">0 adresses</div>
-            <div id="entries" style="margin-bottom: 20px;"></div>
+            <div id="entries" style="margin-bottom: 20px; overflow-x: auto;"></div>
             <button id="btnNew" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Nouvelle adresse</button>
             <button id="btnEndDay" style="width: 100%; padding: 15px; margin: 10px 0; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Fin de journee</button>
         </div>
@@ -139,6 +140,7 @@
             
             document.getElementById("btnSave").onclick = function() {
                 var commune = document.getElementById("ville").value.trim();
+                var codepostal = document.getElementById("codepostal").value.trim();
                 var rue = document.getElementById("rue").value.trim();
                 var numero = document.getElementById("numero").value.trim();
                 var habitat = document.getElementById("habitat").value.trim();
@@ -148,7 +150,7 @@
                 var civilite = document.getElementById("civilite").value.trim();
                 var resident = document.getElementById("resident").value.trim();
                 
-                if (!commune || !rue || !numero || !habitat || !foyers || !acces || !resultat || !civilite || !resident) {
+                if (!commune || !codepostal || !rue || !numero || !habitat || !foyers || !acces || !resultat || !civilite || !resident) {
                     alert("Veuillez remplir tous les champs");
                     return;
                 }
@@ -157,6 +159,7 @@
                     numero: entries.length + 1,
                     numero_rue: numero,
                     rue: rue,
+                    codepostal: codepostal,
                     commune: commune,
                     typeHabitat: habitat,
                     nbrFoyers: foyers,
@@ -195,6 +198,7 @@
             
             document.getElementById("btnNew").onclick = function() {
                 document.getElementById("ville").value = "";
+                document.getElementById("codepostal").value = "";
                 document.getElementById("rue").innerHTML = "<option value=\"\">-- Selectionner rue --</option>";
                 document.getElementById("numero").value = "";
                 document.getElementById("habitat").value = "";
@@ -241,34 +245,41 @@
         }
         
         function displayEntries() {
-            var html = "";
+            var html = "<table style=\"width: 100%; border-collapse: collapse; font-size: 12px;\">";
+            html += "<tr style=\"background: #667eea; color: white; font-weight: bold;\">";
+            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">N°</td>";
+            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Rue</td>";
+            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">CP</td>";
+            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Commune</td>";
+            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Resultat</td>";
+            html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">Nom</td>";
+            html += "</tr>";
+            
             for (var i = 0; i < entries.length; i++) {
                 var e = entries[i];
-                html += "<div style=\"background: #f0f0f0; padding: 12px; margin: 10px 0; border-radius: 5px; border-left: 4px solid #667eea;\">";
-                html += "<strong style=\"color: #667eea;\">#" + e.numero + " - " + e.numero_rue + " " + e.rue + "</strong><br>";
-                html += "<small style=\"color: #666;\">" + e.commune + "</small><br>";
-                html += "<small style=\"color: #666;\">" + e.typeHabitat + " - " + e.nbrFoyers + " foyer(s) - Resultat: " + e.resultat + "</small>";
-                html += "</div>";
+                var bgColor = (e.resultat === "Non servie" || e.resultat === "Mal servie") ? "#ffe0e0" : "white";
+                html += "<tr style=\"background: " + bgColor + ";\">";
+                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.numero_rue + "</td>";
+                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.rue + "</td>";
+                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.codepostal + "</td>";
+                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.commune + "</td>";
+                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.resultat + "</td>";
+                html += "<td style=\"border: 1px solid #ddd; padding: 8px;\">" + e.civilite + " " + e.nomResident + "</td>";
+                html += "</tr>";
             }
+            html += "</table>";
             document.getElementById("entries").innerHTML = html;
             document.getElementById("counter").textContent = entries.length + " adresse(s)";
         }
         
         function sendEmail() {
-            var text = "\n========================================\n";
-            text += "     TABLEAU DES ADRESSES COLLECTEES\n";
-            text += "========================================\n\n";
+            var text = "\nN° rue | Adresse | Code postal | Commune | Resultat | Nom du resident\n";
+            text += "-------------------------------------------------------------------------------------\n";
             
             for (var i = 0; i < entries.length; i++) {
                 var e = entries[i];
-                text += "Adresse #" + (i+1) + "\n";
-                text += "------------------------------------\n";
-                var prefix = (e.resultat === "Non servi" || e.resultat === "Mal servi") ? "*** PROBLEME *** " : "";
-                text += prefix + "Commune : " + e.commune + " - N° rue : " + e.numero_rue + " - Nom rue : " + e.rue + " - Foyers : " + e.nbrFoyers + " - Acces : " + e.typeAcces + " - Civilite : " + e.civilite + " - Nom : " + e.nomResident + " - Resultat : " + e.resultat;
-                if (e.siMalServi) {
-                    text += " - Raison : " + e.siMalServi;
-                }
-                text += "\n\n";
+                var mark = (e.resultat === "Non servie" || e.resultat === "Mal servie") ? "*** " : "";
+                text += mark + e.numero_rue + " | " + e.rue + " | " + e.codepostal + " | " + e.commune + " | " + e.resultat + " | " + e.civilite + " " + e.nomResident + "\n";
             }
             
             var today = new Date();
@@ -322,10 +333,10 @@
         }
         
         function generateExcel() {
-            var wsData = [["Commune", "N° rue", "Nom rue", "Type d'habitat", "Nombre de foyers", "Type d'acces", "Civilite", "Nom", "Resultat"]];
+            var wsData = [["N° rue", "Adresse", "Code postal", "Commune", "Resultat", "Civilite", "Nom du resident"]];
             for (var i = 0; i < entries.length; i++) {
                 var e = entries[i];
-                wsData.push([e.commune, e.numero_rue, e.rue, e.typeHabitat, e.nbrFoyers, e.typeAcces, e.civilite, e.nomResident, e.resultat]);
+                wsData.push([e.numero_rue, e.rue, e.codepostal, e.commune, e.resultat, e.civilite, e.nomResident]);
             }
             var ws = XLSX.utils.aoa_to_sheet(wsData);
             var wb = XLSX.utils.book_new();
