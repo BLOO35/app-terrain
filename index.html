@@ -2,50 +2,187 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>App Terrain</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        * {
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin: 0 0 20px 0;
+        }
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        input, select {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 20px;
+            padding-right: 35px;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            margin: 10px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-success {
+            background: #4caf50;
+            color: white;
+        }
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+        .btn-row {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn-row button {
+            flex: 1;
+            margin: 0;
+        }
+        .error-message {
+            color: #d32f2f;
+            font-size: 12px;
+            margin: -8px 0 10px 0;
+            display: none;
+        }
+        .photo-section {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border: 1px solid #e0e0e0;
+        }
+        .photo-section h3 {
+            color: #667eea;
+            margin-top: 0;
+            font-size: 16px;
+        }
+        .photo-preview img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .entries-item {
+            background: #f0f0f0;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .counter {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        #numeroError {
+            color: #d32f2f;
+            font-size: 12px;
+            margin: -8px 0 10px 0;
+            display: none;
+        }
+    </style>
 </head>
-<body style="font-family: Arial; padding: 20px; background: #f5f5f5; margin: 0;">
-    <div style="max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-        <h1 style="text-align: center; color: #667eea;">📋 Application Terrain</h1>
+<body>
+    <div class="container">
+        <h1>📋 Application Terrain</h1>
         
-        <div id="page0" style="display: block;">
-            <h2 style="color: #333; margin-bottom: 20px; text-align: center;">Sélection de votre zone</h2>
+        <div id="page0" class="page active">
+            <h2 style="text-align: center;">Sélection de votre zone</h2>
             <p style="text-align: center; color: #666; margin-bottom: 20px;">Choisissez votre zone de contrôle :</p>
-            <button id="btnZoneLouvroil" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Louvroil</button>
+            <button id="btnZoneLouvroil" class="btn-primary" style="width: 100%; padding: 16px;">Louvroil</button>
         </div>
         
-        <div id="page1" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">Page 1 - Informations générales</h2>
-            <input type="text" id="nom" placeholder="Nom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <input type="text" id="prenom" placeholder="Prénom" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <input type="text" id="semaine" placeholder="Semaine" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <input type="text" id="client" placeholder="Client" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <input type="text" id="magasin" placeholder="Magasin" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <button id="btnBack1" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
-            <button id="btnNext" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">Suivant →</button>
+        <div id="page1" class="page">
+            <h2>Page 1 - Informations générales</h2>
+            <input type="text" id="nom" placeholder="Nom">
+            <input type="text" id="prenom" placeholder="Prénom">
+            <input type="text" id="semaine" placeholder="Semaine">
+            <input type="text" id="client" placeholder="Client">
+            <input type="text" id="magasin" placeholder="Magasin">
+            <div class="btn-row">
+                <button id="btnBack1" class="btn-secondary">← Retour</button>
+                <button id="btnNext" class="btn-primary">Suivant →</button>
+            </div>
         </div>
         
-        <div id="page2" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">Page 2 - Adresse et détails</h2>
-            <select id="ville" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+        <div id="page2" class="page">
+            <h2>Page 2 - Adresse et détails</h2>
+            <select id="ville">
                 <option value="">-- Sélectionner commune --</option>
             </select>
-            <select id="rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <select id="rue">
                 <option value="">-- Sélectionner rue --</option>
             </select>
-            <input type="number" id="numero" placeholder="N° rue" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <div id="numeroError" style="color: #d32f2f; font-size: 12px; margin: -8px 0 10px 0; display: none;">❌ Numéro non autorisé pour cette rue</div>
+            <input type="number" id="numero" placeholder="N° rue">
+            <div id="numeroError" class="error-message">❌ Numéro non autorisé pour cette rue</div>
             
-            <select id="habitat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <select id="habitat">
                 <option value="">-- Type d'habitat --</option>
                 <option value="Pavillon">Pavillon</option>
                 <option value="Immeuble">Immeuble</option>
             </select>
-            <input type="number" id="foyers" placeholder="Nombre de foyers" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
-            <select id="acces" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="number" id="foyers" placeholder="Nombre de foyers">
+            <select id="acces">
                 <option value="">-- Type d'accès --</option>
                 <option value="Libre">Libre</option>
                 <option value="Clé Pass">Clé Pass</option>
@@ -53,43 +190,45 @@
                 <option value="Interphone">Interphone</option>
                 <option value="Code">Code</option>
             </select>
-            <select id="resultat" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <select id="resultat">
                 <option value="">-- Résultat du contrôle --</option>
                 <option value="Servi">Servi</option>
                 <option value="Non servi">Non servi</option>
                 <option value="Mal servi">Mal servi</option>
             </select>
-            <select id="malservi" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <select id="malservi">
                 <option value="">-- Si Mal servi --</option>
                 <option value="Dépôt">Dépôt</option>
                 <option value="Ciblage (Stop-pubs servi)">Ciblage (Stop-pubs servi)</option>
                 <option value="Ciblage (HLM servi)">Ciblage (HLM servi)</option>
                 <option value="Multidistribution">Multidistribution</option>
             </select>
-            <select id="civilite" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <select id="civilite">
                 <option value="">-- Civilité --</option>
                 <option value="M.">M.</option>
                 <option value="Mme">Mme</option>
                 <option value="M. & Mme">M. & Mme</option>
             </select>
-            <input type="text" id="resident" placeholder="Nom du résident" style="width: 100%; padding: 12px; margin: 10px 0; font-size: 16px; box-sizing: border-box; border: 1px solid #ddd; border-radius: 5px;">
+            <input type="text" id="resident" placeholder="Nom du résident">
             
-            <div id="photoSection" style="margin: 15px 0; padding: 15px; background: #f9f9f9; border-radius: 5px; border: 1px solid #e0e0e0;">
-                <h3 style="color: #667eea; margin-top: 0;">📸 Photo (optionnel)</h3>
-                <input type="file" id="photoInput" accept="image/*" capture="environment" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 5px;">
-                <div id="photoPreview" style="margin-top: 10px;"></div>
+            <div class="photo-section">
+                <h3>📸 Photo (optionnel)</h3>
+                <input type="file" id="photoInput" accept="image/*" capture="environment">
+                <div id="photoPreview" class="photo-preview"></div>
             </div>
             
-            <button id="btnBack2" style="width: 48%; padding: 15px; margin: 20px 1% 10px 0; background: #ddd; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">← Retour</button>
-            <button id="btnSave" style="width: 48%; padding: 15px; margin: 20px 0 10px 0; background: #4caf50; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">✓ Valider</button>
+            <div class="btn-row">
+                <button id="btnBack2" class="btn-secondary">← Retour</button>
+                <button id="btnSave" class="btn-success">✓ Valider</button>
+            </div>
         </div>
         
-        <div id="page3" style="display: none;">
-            <h2 style="color: #333; margin-bottom: 20px;">Adresses collectées</h2>
-            <div id="counter" style="text-align: center; font-size: 18px; font-weight: bold; color: #667eea; margin-bottom: 15px;">0 adresses</div>
+        <div id="page3" class="page">
+            <h2>Adresses collectées</h2>
+            <div id="counter" class="counter">0 adresses</div>
             <div id="entries" style="margin-bottom: 20px;"></div>
-            <button id="btnNew" style="width: 100%; padding: 15px; margin: 10px 0; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">+ Nouvelle adresse</button>
-            <button id="btnEndDay" style="width: 100%; padding: 15px; margin: 10px 0; background: #ff6b6b; color: white; border: none; border-radius: 5px; font-size: 16px; cursor: pointer; font-weight: bold;">🏁 Fin de journée</button>
+            <button id="btnNew" class="btn-primary">+ Nouvelle adresse</button>
+            <button id="btnEndDay" class="btn-danger">🏁 Fin de journée</button>
         </div>
     </div>
     
@@ -108,16 +247,102 @@
         let currentZone = null;
         let currentRueRanges = [];
         
-        document.getElementById('btnZoneLouvroil').onclick = function() {
-            selectZone('Louvroil');
-        };
+        // Fonction pour changer de page
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+        
+        // Initialiser les événements au chargement du DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Page chargée');
+            
+            // Zone Louvroil
+            const btnZoneLouvroil = document.getElementById('btnZoneLouvroil');
+            if (btnZoneLouvroil) {
+                btnZoneLouvroil.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Clique sur Louvroil');
+                    selectZone('Louvroil');
+                });
+            }
+            
+            // Page 1
+            document.getElementById('btnNext').addEventListener('click', function(e) {
+                e.preventDefault();
+                const nom = document.getElementById('nom').value.trim();
+                const prenom = document.getElementById('prenom').value.trim();
+                const semaine = document.getElementById('semaine').value.trim();
+                const client = document.getElementById('client').value.trim();
+                const magasin = document.getElementById('magasin').value.trim();
+                
+                if (!nom || !prenom || !semaine || !client || !magasin) {
+                    alert('Veuillez remplir tous les champs');
+                    return;
+                }
+                
+                page1Data = {nom, prenom, semaine, client, magasin};
+                showPage('page2');
+            });
+            
+            document.getElementById('btnBack1').addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('page0');
+            });
+            
+            // Page 2
+            document.getElementById('ville').addEventListener('change', function() {
+                loadRues();
+            });
+            
+            document.getElementById('rue').addEventListener('change', function() {
+                updateRueRanges();
+            });
+            
+            document.getElementById('numero').addEventListener('blur', function() {
+                validateNumber();
+            });
+            
+            document.getElementById('photoInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        currentPhoto = event.target.result;
+                        document.getElementById('photoPreview').innerHTML = '<img src="' + currentPhoto + '">';
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            document.getElementById('btnBack2').addEventListener('click', function(e) {
+                e.preventDefault();
+                showPage('page1');
+            });
+            
+            document.getElementById('btnSave').addEventListener('click', function(e) {
+                e.preventDefault();
+                saveAddress();
+            });
+            
+            // Page 3
+            document.getElementById('btnNew').addEventListener('click', function(e) {
+                e.preventDefault();
+                resetPage2();
+                showPage('page2');
+            });
+            
+            document.getElementById('btnEndDay').addEventListener('click', function(e) {
+                e.preventDefault();
+                endDay();
+            });
+        });
         
         function selectZone(zone) {
             currentZone = zone;
             loadVilles(zone);
-            document.getElementById('page0').style.display = 'none';
-            document.getElementById('page1').style.display = 'block';
-            window.scrollTo(0, 0);
+            showPage('page1');
         }
         
         function loadVilles(zone) {
@@ -133,45 +358,8 @@
             });
         }
         
-        document.getElementById('photoInput').addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    currentPhoto = event.target.result;
-                    const preview = document.getElementById('photoPreview');
-                    preview.innerHTML = '<img src="' + currentPhoto + '" style="max-width: 100%; border-radius: 5px; margin-top: 10px;">';
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        
-        document.getElementById('btnBack1').onclick = function() {
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page0').style.display = 'block';
-            window.scrollTo(0, 0);
-        };
-        
-        document.getElementById('btnNext').onclick = function() {
-            const nom = document.getElementById('nom').value.trim();
-            const prenom = document.getElementById('prenom').value.trim();
-            const semaine = document.getElementById('semaine').value.trim();
-            const client = document.getElementById('client').value.trim();
-            const magasin = document.getElementById('magasin').value.trim();
-            
-            if (!nom || !prenom || !semaine || !client || !magasin) {
-                alert('Veuillez remplir tous les champs');
-                return;
-            }
-            
-            page1Data = {nom, prenom, semaine, client, magasin};
-            document.getElementById('page1').style.display = 'none';
-            document.getElementById('page2').style.display = 'block';
-            window.scrollTo(0, 0);
-        };
-        
-        document.getElementById('ville').onchange = function() {
-            const commune = this.value;
+        function loadRues() {
+            const commune = document.getElementById('ville').value;
             const rueSelect = document.getElementById('rue');
             
             rueSelect.innerHTML = '<option value="">-- Sélectionner rue --</option>';
@@ -185,38 +373,32 @@
                     rueSelect.appendChild(opt);
                 });
             }
-        };
+        }
         
-        document.getElementById('rue').onchange = function() {
+        function updateRueRanges() {
             const commune = document.getElementById('ville').value;
-            const rue = this.value;
+            const rue = document.getElementById('rue').value;
             
             if (commune && rue) {
                 currentRueRanges = dataZones[currentZone].rues[commune][rue];
             }
             document.getElementById('numeroError').style.display = 'none';
-        };
+        }
         
-        document.getElementById('numero').addEventListener('blur', function() {
-            const numero = parseInt(this.value);
+        function validateNumber() {
+            const numero = parseInt(document.getElementById('numero').value);
             const errorDiv = document.getElementById('numeroError');
             
-            if (!this.value) {
+            if (!document.getElementById('numero').value) {
                 errorDiv.style.display = 'none';
                 return;
             }
             
             const isValid = currentRueRanges.some(range => numero >= range.debut && numero <= range.fin);
             errorDiv.style.display = isValid ? 'none' : 'block';
-        });
+        }
         
-        document.getElementById('btnBack2').onclick = function() {
-            document.getElementById('page2').style.display = 'none';
-            document.getElementById('page1').style.display = 'block';
-            window.scrollTo(0, 0);
-        };
-        
-        document.getElementById('btnSave').onclick = function() {
+        function saveAddress() {
             const commune = document.getElementById('ville').value.trim();
             const rue = document.getElementById('rue').value.trim();
             const numero = document.getElementById('numero').value.trim();
@@ -242,3 +424,155 @@
             entries.push({
                 numero: entries.length + 1,
                 numero_rue: numero,
+                rue: rue,
+                commune: commune,
+                typeHabitat: habitat,
+                nbrFoyers: foyers,
+                typeAcces: acces,
+                resultat: resultat,
+                siMalServi: document.getElementById('malservi').value || '',
+                civilite: civilite,
+                nomResident: resident,
+                photo: currentPhoto,
+                zone: currentZone,
+                ...page1Data
+            });
+            
+            displayEntries();
+            alert('✅ Adresse enregistrée ! (' + entries.length + ' adresse(s))');
+            resetPage2();
+            showPage('page3');
+        }
+        
+        function resetPage2() {
+            document.getElementById('ville').value = '';
+            document.getElementById('rue').innerHTML = '<option value="">-- Sélectionner rue --</option>';
+            document.getElementById('numero').value = '';
+            document.getElementById('habitat').value = '';
+            document.getElementById('foyers').value = '';
+            document.getElementById('acces').value = '';
+            document.getElementById('resultat').value = '';
+            document.getElementById('malservi').value = '';
+            document.getElementById('civilite').value = '';
+            document.getElementById('resident').value = '';
+            document.getElementById('photoInput').value = '';
+            document.getElementById('photoPreview').innerHTML = '';
+            currentPhoto = null;
+            currentRueRanges = [];
+        }
+        
+        function displayEntries() {
+            let html = '';
+            entries.forEach(e => {
+                html += '<div class="entries-item">';
+                html += '<strong>#' + e.numero + ' - ' + e.numero_rue + ' ' + e.rue + '</strong><br>';
+                html += '<small>' + e.commune + '</small><br>';
+                html += '<small>' + e.typeHabitat + ' · ' + e.nbrFoyers + ' foyer(s) · ' + e.resultat + '</small>';
+                if (e.photo) {
+                    html += '<br><small>📸 Photo jointe</small>';
+                }
+                html += '</div>';
+            });
+            document.getElementById('entries').innerHTML = html;
+            document.getElementById('counter').textContent = entries.length + ' adresse(s)';
+        }
+        
+        function endDay() {
+            if (entries.length === 0) {
+                alert('⚠️ Aucune adresse collectée !');
+                return;
+            }
+            
+            if (confirm('📧 Confirmer l\'envoi de ' + entries.length + ' adresse(s) ?')) {
+                sendEmailAndExcel();
+            }
+        }
+        
+        function generateExcel() {
+            const wsData = [
+                ['Commune', 'N° rue', 'Nom rue', 'Type d\'habitat', 'Nombre de foyers', 'Type d\'accès', 'Civilité', 'Nom', 'Résultat', 'Si Mal servi', 'Photo', 'Zone']
+            ];
+            
+            entries.forEach((e) => {
+                wsData.push([
+                    e.commune,
+                    e.numero_rue,
+                    e.rue,
+                    e.typeHabitat,
+                    e.nbrFoyers,
+                    e.typeAcces,
+                    e.civilite,
+                    e.nomResident,
+                    e.resultat,
+                    e.siMalServi,
+                    e.photo ? 'Oui' : 'Non',
+                    e.zone
+                ]);
+            });
+            
+            const ws = XLSX.utils.aoa_to_sheet(wsData);
+            ws['!cols'] = [{wch:15}, {wch:8}, {wch:25}, {wch:15}, {wch:15}, {wch:15}, {wch:12}, {wch:20}, {wch:15}, {wch:25}, {wch:10}, {wch:12}];
+            
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, 'Adresses');
+            XLSX.writeFile(wb, 'adresses_collectees_' + currentZone + '.xlsx');
+        }
+        
+        function sendEmailAndExcel() {
+            let tableauTexte = '\n========================================\n     TABLEAU DES ADRESSES COLLECTEES\n========================================\n\n';
+            
+            entries.forEach((e, i) => {
+                tableauTexte += 'Adresse #' + (i+1) + '\n';
+                tableauTexte += '────────────────────────────────────\n';
+                tableauTexte += 'Commune : ' + e.commune + '\n';
+                tableauTexte += 'N° rue : ' + e.numero_rue + '\n';
+                tableauTexte += 'Nom rue : ' + e.rue + '\n';
+                tableauTexte += 'Nombre de foyers : ' + e.nbrFoyers + '\n';
+                tableauTexte += 'Type d\'accès : ' + e.typeAcces + '\n';
+                tableauTexte += 'Civilité : ' + e.civilite + '\n';
+                tableauTexte += 'Nom : ' + e.nomResident + '\n';
+                tableauTexte += 'Résultat : ' + e.resultat + '\n';
+                if (e.siMalServi) {
+                    tableauTexte += 'Si Mal servi : ' + e.siMalServi + '\n';
+                }
+                if (e.photo) {
+                    tableauTexte += 'Photo : Oui\n';
+                }
+                tableauTexte += '\n';
+            });
+            
+            const today = new Date();
+            const dateStr = today.toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+            
+            const messageComplet = 'Bonjour,\n\n=======================================\n    RAPPORT DE COLLECTE DE TERRAIN\n=======================================\n\nZone : ' + currentZone + '\nCollecteur : ' + page1Data.nom + ' ' + page1Data.prenom + '\nSemaine : ' + page1Data.semaine + '\nDate du contrôle : ' + dateStr + '\nClient : ' + page1Data.client + '\nMagasin : ' + page1Data.magasin + '\nTotal d\'adresses : ' + entries.length + '\n' + tableauTexte + '\n=======================================\nFichier Excel joint au mail.\nCordialement,\nApplication Terrain';
+            
+            const templateParams = {
+                to_email: 'amc@auditmediacom.com',
+                from_name: page1Data.nom + ' ' + page1Data.prenom,
+                subject: 'Rapport collecte - ' + currentZone + ' - ' + page1Data.client + ' - ' + page1Data.magasin + ' - ' + page1Data.nom + ' ' + page1Data.prenom + ' (' + entries.length + ' adresses)',
+                message: messageComplet
+            };
+            
+            emailjs.send('service_ryubxrp', 'template_ds6yn34', templateParams)
+                .then(function(response) {
+                    alert('✅ Email envoyé avec succès !\n📥 Téléchargement de l\'Excel...');
+                    generateExcel();
+                    
+                    setTimeout(() => {
+                        entries = [];
+                        currentPhoto = null;
+                        document.getElementById('nom').value = '';
+                        document.getElementById('prenom').value = '';
+                        document.getElementById('semaine').value = '';
+                        document.getElementById('client').value = '';
+                        document.getElementById('magasin').value = '';
+                        showPage('page0');
+                    }, 3000);
+                }, function(error) {
+                    alert('❌ Erreur lors de l\'envoi : ' + error);
+                    console.log('FAILED...', error);
+                });
+        }
+    </script>
+</body>
+</html>
